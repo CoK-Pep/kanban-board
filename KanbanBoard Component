@@ -1,0 +1,38 @@
+import React, { useState } from "react";
+import Column from "./Column";
+import TaskForm from "./TaskForm";
+import { useSelector } from "react-redux";
+
+const KanbanBoard = () => {
+  const tasks = useSelector((state) => state.tasks); // Get tasks from Redux store
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredTasks = tasks.filter((task) =>
+    task.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const stages = ["To Do", "In Progress", "Peer Review", "Done"];
+
+  return (
+    <div className="kanban-board">
+      <input
+        type="text"
+        placeholder="Search tasks..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+      <div className="columns">
+        {stages.map((stage) => (
+          <Column
+            key={stage}
+            title={stage}
+            tasks={filteredTasks.filter((task) => task.stage === stage)}
+          />
+        ))}
+      </div>
+      <TaskForm />
+    </div>
+  );
+};
+
+export default KanbanBoard;
